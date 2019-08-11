@@ -95,7 +95,7 @@ class Scenario(BaseScenario):
                 if thisAgent.action.u[1] > 0.0: # this agent cheat
                     thisAgent.action.u[1] += 2.0
                 else:
-                    thisAgent.action.u[1] = 0.0
+                    thisAgent.action.u[1] = -1.5
             reward_n.append(thisAgent.action.u[1])
         return reward_n
 
