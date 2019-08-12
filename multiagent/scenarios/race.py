@@ -10,6 +10,10 @@ class Scenario(BaseScenario):
         super(Scenario, self).__init__()
         self.agentsToLandMarks = {}
         self.numberOfAgents=6
+        self.allCooperateForce = 1.0
+        self.allCheatPunishment = -1.0
+        self.cheaterGain = 2.0
+        self.robbedCooperator = 0.0
 
     def make_world(self):
         world = World()
@@ -76,26 +80,30 @@ class Scenario(BaseScenario):
         reward_n = []
         numOfCheaters = 0
         numOfAgents = 0
+        # if(agent_cheated(world.agents[1])):
+        #     print(world.agents[1].action.u)
         for i, thisAgent in enumerate(world.agents):
-            # if i == 0:
+            # if i == 2:
+            # print(thisAgent.action.u)
             # print(i)
             # print(agent.action.u)
             numOfAgents += 1
             thisAgent.action.u[0] = 0.0 #invalidate horizontal action
             if agent_cheated(thisAgent): #it's trying to move up
                 numOfCheaters += 1
+                # print("agent " + str(i) + "cheated" )
         # print(numOfCheaters)
 
         for i, thisAgent in enumerate(world.agents):
             if numOfCheaters > numOfAgents//2:
-                thisAgent.action.u[1] = -1.0 # all cheat: move back ward
+                thisAgent.action.u[1] = self.allCheatPunishment # all cheat: move back ward
             elif numOfCheaters == 0:
-                thisAgent.action.u[1] = 1.0 # all cooperate: move up together
+                thisAgent.action.u[1] = self.allCooperateForce # all cooperate: move up together
             else:
                 if thisAgent.action.u[1] > 0.0: # this agent cheat
-                    thisAgent.action.u[1] += 2.0
+                    thisAgent.action.u[1] = self.cheaterGain
                 else:
-                    thisAgent.action.u[1] = 0.0
+                    thisAgent.action.u[1] = self.robbedCooperator
             reward_n.append(thisAgent.action.u[1])
         return reward_n
 
