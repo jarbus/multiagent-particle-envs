@@ -152,8 +152,24 @@ You can create new scenarios by implementing the first 4 functions above (`make_
       - If actions are discrete,(discrete_action_input is true)  the agent only has 5 options : stay, move up, move down, move left and move right. In this case, the action's first element is an int(0, 1,2,3 or 4 ) specifying the force vector. Other elements are for agent's communication action, and in this case, the agent can only communicate to one dimension(only one of the elements in agent.action.c list can be 1.0), and that dimension is specified by the first integer in the second part of action list ( action list has 2 part, explained in the first paragraph of this class's documentation ).
       - The actions can also be performed  "discretely",  this happens when the world class (in core.py) has attribute discrete_action and environment's force_discrete_action attribute is True. In this case, agents' final action will keep the largest component of this force vector, and set all other components 0.
 
-      ​
+### envRace.py: 
+(the modified version of environment.py for race scenario.)
+
+Compatibility issue between race.py and this multi-agent environment :
+
+This multi-agent environment expects all agents' actions to be specific force values. However, in this scenario, the agents are making abstract actions: cheat/cooperate.
+
+One easy way to make the environment work with abstract actions is to represent those abstract actions with the sort of data this library accepts -- numpy arrays. However, another issue arises when trying to represent abstract actions with these arrays: In each step, once we pass an agent's action to the environment as a numpy array, the environment will take this array, interpret it as a force value and immediately update the corresponding agents' speed and position accordingly. This is not what we want, those arrays are used to represent agents' actions in each step, and each agent's speed and position are determined by all agent's actions, not its own action. We need to make sure the environment doesn't update agent's position until all agents' actions are considered.
+
+Changes:
+
+1. In the step function, call reward function from the race.py first, then call world.step which updates all agents physical positions. In each step, the reward function will iterate through all agent's cheat/cooperate actions, and then determine every agent's reward, which is a force value determining how much a given agent can move, and make this reward their actual physical force. The physical forces after the reward function call are the correct forces agents get in each step.
+
+2. In other scenarios, every time the reward function in the scenario class is called, it handles only one agents reward, in race scenario, it handles all agents' reward in one call, this is necessary too: All agents' physical actions are in one list, and is passed to the reward function. Initially they are meaningless values representing cheat/cooperate actions, after the reward function call, they all become agents' actual moving forces. If the reward function is called n times for n agents, each time it determines an agent's reward based on this list, and change one element in this list, as a result, at the second time the reward function is called,  the action_list are no longer all agents' cheat/cooperate actions any more, one of them is an actual physical force value, and this physical force value is not necessarily translated to this agent's original cheat/cooperate action.  To fix this, the reward function is made such that it determines all agent's physical force received(or reward), and update the all agents' action(physical force received) together, as a result, the reward function returns a list of forces, instead of one force at a time. Corresponding changes were also made in the environment class so that they are compatible.
+
+
 
 ## Extra Notice
+
 ### Compatiability:
 The Scenario.py must be run under Linux System, the windows prompt will leads to unknown bugs
