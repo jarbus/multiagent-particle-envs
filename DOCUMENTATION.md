@@ -26,7 +26,12 @@ In a simulation with `n` agents:
             - n debug objects
     3. Re-render
         - `multiagent/environment.py.render()`
+## Training models and display
+### To train:  
+python train.py --scenario simple_tagGT --save-dir "./simple_tagGT/model"
 
+### To display:  
+python train.py --scenario simple_tagGT --display --load-dir "./simple_tagGT/model"
 ## Environment
 
 The main class in use during execution. The environment interacts with the scenario and the agents. There is one environment that all scenarios use. Each scenario implements reward() and observation() which the environment calls.
