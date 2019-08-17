@@ -181,4 +181,5 @@ Changes:
 ### Compatiability:
 The Scenario.py must be run under Linux System, the windows prompt will leads to unknown bugs
 Using Virtual machine instead
-### Some important render options
+### Train opitions
+Train opitions are available in Train.py
