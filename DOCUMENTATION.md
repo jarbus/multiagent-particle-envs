@@ -121,11 +121,12 @@ You can create new scenarios by implementing the first 4 functions above (`make_
 - functions:
   - step(self, action_n): 
     - This function updates all entities states and assign rewards to agents and returns these new state informations. It calls world.step(implemented in core.py ) and it should to be called in main script.
+    - The function takes in specialized information, any opreation inside the step is unacceptable
     - Parameters: a list of actions for each agent. 
     - Return: a list of rewards, observation, done_n and info_n.
 
   - reset(self):
-    - It calls the scenario's reset_world function, which is used to set initial condition for the world and calls _reset_render to reset the Visualization window. It also reassign world's policy agents to self.agents. Finally it initializes each agents' observation by calling the observation function in scenario class.
+    - It calls the scenario's reset_world function, which is used to set initial condition for the world and calls _reset_render to reset the Visualization window. It also reassign world's policy agents to self.agents. Finally it initializes each agents' observation by calling the observation function in scenario class. 
     - returns: all agents' observation in a list.
 
   - _get_info(self, agent): returns information about a given agent. It returns nothing if info-callback is none. info_callback function is assigned to this environment object in the constructor.
@@ -172,9 +173,12 @@ Changes:
 
 2. In other scenarios, every time the reward function in the scenario class is called, it handles only one agents reward, in race scenario, it handles all agents' reward in one call, this is necessary too: All agents' physical actions are in one list, and is passed to the reward function. Initially they are meaningless values representing cheat/cooperate actions, after the reward function call, they all become agents' actual moving forces. If the reward function is called n times for n agents, each time it determines an agent's reward based on this list, and change one element in this list, as a result, at the second time the reward function is called,  the action_list are no longer all agents' cheat/cooperate actions any more, one of them is an actual physical force value, and this physical force value is not necessarily translated to this agent's original cheat/cooperate action.  To fix this, the reward function is made such that it determines all agent's physical force received(or reward), and update the all agents' action(physical force received) together, as a result, the reward function returns a list of forces, instead of one force at a time. Corresponding changes were also made in the environment class so that they are compatible.
 
-
+3. Noticing that the original environment takesin policies, however, the new envrionment doesn't recognize any data from the policy
+   for race senario, it has to be hard corded or use decrypted information(directly reads from the output) to change the environment        behaviour
 
 ## Extra Notice
 
 ### Compatiability:
 The Scenario.py must be run under Linux System, the windows prompt will leads to unknown bugs
+Using Virtual machine instead
+### Some important render options
