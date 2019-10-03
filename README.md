@@ -1,8 +1,15 @@
-**Status:** Code is an archived project for the Rensselaer Polytechnic Institute's Open Source Software Class.
+**Status:** Code is an archived fork for the Rensselaer Polytechnic Institute's Open Source Software Class.
 
-- Most team communication done via mattermost at chat.rcos.io
-- The working directory is in development branch
-- The scenario in development branch is not yet tested
+Added environments:
+
+- `water_hole.py`: Agents try to maximize reward by splitting between resources
+- `race.py`: Agents try to move quickly in a direction, but if too many agents try to move too quickly, they get set backwards, requiring coordination
+- `pac.py`: Prey attempts to move around to collect reward while avoiding cooperative predators
+- `simple_tagGT.py`: simple_tag with modified rewards
+
+Added policies:
+
+- dqn: 3-layer implementation of a deep-q network
 
 # Multi-Agent Particle Environment
 
